@@ -1,0 +1,149 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.frightanic</groupId>
+  <artifactId>junit-references</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+
+  <properties>
+    <!-- How to detect if you're running the latest version of the configured dependencies:
+         mvn -N versions:display-property-updates OR
+         mvn -N versions:display-plugin-updates
+     -->
+
+    <!-- Turn of the silly Java 8 Javadoc linter. -->
+    <additionalparam>-Xdoclint:none</additionalparam>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <surefire.dir>${project.build.directory}/surefire-reports</surefire.dir>
+
+    <source.version>1.7</source.version>
+    <target.version>1.7</target.version>
+
+    <commons-io.version>2.4</commons-io.version>
+    <hamcrest.version>1.3</hamcrest.version>
+    <jackson.version>2.5.0</jackson.version>
+    <jaxen.version>1.1.6</jaxen.version>
+    <jdom.version>2.0.5</jdom.version>
+    <junit.version>4.12</junit.version>
+    <guava.version>18.0</guava.version>
+  </properties>
+
+  <dependencies>
+
+    <!-- Jackson -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+
+    <!-- JDOM -->
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>${jdom.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>${jaxen.version}</version>
+    </dependency>
+
+    <!-- Misc -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons-io.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+      <version>${hamcrest.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <source>${source.version}</source>
+          <target>${target.version}</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.18.1</version>
+        <configuration>
+          <forkCount>0</forkCount>
+          <properties>
+            <property>
+              <name>listener</name>
+              <value>com.frightanic.junit.references.ReferencesAnnotationsRunListener</value>
+            </property>
+          </properties>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>test-reports</id>
+            <phase>prepare-package</phase>
+            <configuration>
+              <target>
+                <junitreport todir="${surefire.dir}">
+                  <fileset dir="${surefire.dir}">
+                    <include name="TEST-*.xml" />
+                  </fileset>
+                  <report format="noframes" todir="${surefire.dir}" styledir="${project.build.outputDirectory}" />
+                </junitreport>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-junit</artifactId>
+            <version>1.9.3</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+    </plugins>
+  </build>
+</project>
